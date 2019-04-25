@@ -6,12 +6,12 @@ db = DB()
 fetch = Fetch()
 
 apiserver = {
-    "type1" : "http://172.80.57.10",
-    "type2" : "http://app.sohutvt.com",
-    "type3" : "https://beautybox9.com",
-    "type4" : "https://beautybox3.com",
-    "type5" : "https://beautybox1.com",
-    "type6" : "http://69.87.192.74:32119"
+    "type1": "http://172.80.57.10",
+    "type2": "http://app.sohutvt.com",
+    "type3": "https://beautybox9.com",
+    "type4": "https://beautybox3.com",
+    "type5": "https://beautybox1.com",
+    "type6": "http://69.87.192.74:32119"
 }
 video_path = "video/"
 cover_path = "cover/"
@@ -34,8 +34,8 @@ def download_video():
             img_url = apiserver[img_type] + res['img'][5:]
             img_name = res['img'].split("/")[-1]
             log.log_info("下载封面[%s]%s" % (res['uuid'], video_url))
-            if fetch.download_file(video_url, cover_path + img_name):
-                db.set_res_img_path(res['uuid'], img_name)
+            if fetch.download_file(img_url, video_path + video_name + ".jpg"):
+                db.set_res_img_path(res['uuid'], video_name + ".jpg")
             count += 1
         else:
             log.log_success("全部视频下载完毕，总计：" + count)
@@ -57,3 +57,22 @@ def download_image():
         else:
             log.log_success("全部图片下载完毕，总计：" + count)
             break
+
+
+def download_box_cover():
+    count = 0
+    while True:
+        res = db.get_undownload_box_image_one()
+        if res:
+            image_type = res['img'][0:5]
+            image_url = apiserver[image_type] + res['img'][5:]
+            image_name = res['img'].split("/")[-1]
+            log.log_info("下载盒子封面[%s]%s" % (res['boxid'], image_url))
+            if fetch.download_file(image_url, cover_path + image_name):
+                db.set_box_image_path(res['boxid'], image_name)
+            count += 1
+        else:
+            log.log_success("全部盒子封面下载完毕，总计：" + count)
+            break
+
+download_box_cover()

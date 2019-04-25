@@ -11,7 +11,7 @@ from pymysql.err import IntegrityError
 
 class Fetch:
 
-    def __init__(self, username, password):
+    def __init__(self, username=None, password=None):
         self.db = DB()
         self.__token = None
         self.username = username

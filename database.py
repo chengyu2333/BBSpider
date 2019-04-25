@@ -111,9 +111,17 @@ class DB:
         except Exception:
             raise
 
-    def set_imgage_path(self, uuid, path):
+    def get_undownload_box_image_one(self):
         try:
-            sql = "update image set path='%s' where uuid=%d " % (path, uuid)
+            sql = "select * from box where img_path is null and img is not null limit 1"
+            self._db_cursor.execute(sql)
+            return self._db_cursor.fetchone()
+        except Exception:
+            raise
+
+    def set_box_image_path(self, boxid, path):
+        try:
+            sql = "update box set img_path='%s' where boxid=%d " % (path, boxid)
             return self._db_cursor.execute(sql)
         except Exception:
             raise
