@@ -1,6 +1,6 @@
+# -*- coding: utf-8 -*-
+
 from pymysql import cursors, connect
-from pymysql.err import IntegrityError
-import log
 
 class DB:
     _db_cursor = None
@@ -38,11 +38,12 @@ class DB:
         if k in d:
             s = d[k]
             if 'str' in str(type(s)):
+                s = s.replace("'", "''")
                 return "'" + s + "'"
             else:
                 return s
         else:
-            return "Null"
+            return "NULL"
 
     def add_box(self, boxid,userid,booknum,picnum,vodnum,filmnum,collect,follow_times,name,img):
         try:
@@ -56,7 +57,7 @@ class DB:
     def add_res(self,uuid,video,img,follow_times,height,width,length,num,boxid,userid,name,nickname,type,timestamp,topnum):
         try:
             sql = "insert into " \
-                  "res(uuid,video,img,follow_times,height,width,length,num,boxid,userid,`name`,nickname,type,`timestamp`,topnum)" \
+                  "res(uuid,video,img,follow_times,height,width,length,num,boxid,userid,`name`,nickname,`type`,`timestamp`,topnum)" \
                   " values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) " \
                   % (uuid,video,img,follow_times,height,width,length,num,boxid,userid,name,nickname,type,timestamp,topnum)
             self._db_cursor.execute(sql)
