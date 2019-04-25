@@ -31,7 +31,7 @@ class Fetch:
                                         json={"password": self.password, "username": self.username}).text
                     data = json.loads(raw)
                     if data['code'] == 200:
-                        self.__token = "Basic " + data['data']['__token']
+                        self.__token = "Basic " + data['data']['token']
                         log.log_info("获取token：" + self.__token)
                     else:
                         raise Exception("获取token失败")
@@ -204,14 +204,14 @@ class Fetch:
                 self.fetch_res_by_box_id(boxid, page + 1, type, True)
 
     # 爬取全部盒子
-    def fetch_res_by_all_box(self, type=2):
+    def fetch_res_by_all_box(self, type=2, startPage=1):
         count = 0
         while True:
             res = self.db.get_unfetchbox_one()
             print(res)
             if res:
                 self.db.set_box_flag(res['boxid'], 1)
-                self.fetch_res_by_box_id(res['boxid'], 1, type, True)
+                self.fetch_res_by_box_id(res['boxid'], startPage, type, True)
                 count += 1
                 self.db.set_box_flag(res['boxid'], 2)
             else:
