@@ -19,7 +19,7 @@ class Fetch:
         self.duplicate_count = 0
         self.serial_duplicate_count = 0
 
-    @retry(stop_max_attempt_number=3,
+    @retry(stop_max_attempt_number=5,
            stop_max_delay=1000,
            wait_exponential_multiplier=2000,
            wait_exponential_max=6000)

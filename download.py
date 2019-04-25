@@ -72,7 +72,11 @@ def download_box_cover():
                 db.set_box_image_path(res['boxid'], image_name)
             count += 1
         else:
-            log.log_success("全部盒子封面下载完毕，总计：" + count)
+            log.log_success("全部盒子封面下载完毕，总计：" + str(count))
             break
 
-download_box_cover()
+# download_box_cover()
+
+# download_image()
+
+# download_video()
