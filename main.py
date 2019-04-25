@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 import log
@@ -19,7 +21,7 @@ fetch = Fetch("username", "password")
 # fetch.fetch_user_follow_box_list(recursion=True)
 
 # 爬取已抓取的全部盒子
-fetch.fetch_res_by_all_box(type=2)
+fetch.fetch_res_by_all_box(type=2, startPage=1025)
 
 # 用户盒子
 # fetch.fetch_user_follow_box_list(user_id=2381483, page=1, recursion=True)

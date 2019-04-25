@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from urllib import request
 import time
@@ -32,9 +34,9 @@ class Fetch:
                     data = json.loads(raw)
                     if data['code'] == 200:
                         self.__token = "Basic " + data['data']['token']
-                        log.log_info("获取token：" + self.__token)
+                        log.log_info("get token：" + self.__token)
                     else:
-                        raise Exception("获取token失败")
+                        raise Exception("Get token failed")
                 self.__headers = {"Authorization": self.__token}
                 raw = requests.get(url, headers=self.__headers).text
             else:
@@ -45,7 +47,7 @@ class Fetch:
                 return data['data']
             else:
                 log.log_error(url + "\n" + raw)
-                raise Exception("api返回错误")
+                raise Exception("api return error")
         except Exception as e:
             log.log_error(url + "\n" + raw)
             raise e
@@ -62,7 +64,7 @@ class Fetch:
                 f.write(data)
                 f.flush()
                 f.close()
-            log.log_info("下载完成%s[%s]" % (filename, url))
+            log.log_info("download finished%s[%s]" % (filename, url))
             return True
         except Exception as e:
             log.log_error(url + str(e))
@@ -78,20 +80,20 @@ class Fetch:
         try:
             data = self.__fetch_api(url)
             pages = data["pages"]
-            log.log_info("正在爬取%s盒子，当前第%d页，总页数%d" % (order, page, pages))
+            log.log_info("fetch box %s,current page %d,total page %d" % (order, page, pages))
             for i in data["items"]:
                 print(i)
                 show = i['show']
                 self.db.add_box(i['id'], 'NULL', i['bookmun'], i['picmun'], i['vodmun'], i['filmmun'], i['collect'],
                                 i['follow_times'],
                                 self.db.sql_format(i, 'name'), self.db.sql_format(show, 'img'))
-            log.log_success("已爬取%s盒子，当前第%d页，总页数%d" % (order, page, pages))
+            log.log_success("fetched box %s,current page %d,total page %d" % (order, page, pages))
             self.serial_duplicate_count = 0
         except IntegrityError:
             self.duplicate_count += 1
             self.serial_duplicate_count += 1
             if self.serial_duplicate_count % 10 == 1:
-                log.log_info("盒子已连续重复爬取%d次，总重复%d次" % (self.serial_duplicate_count, self.duplicate_count))
+                log.log_info("serial duplicate %d times，total duplicate %d times" % (self.serial_duplicate_count, self.duplicate_count))
             self.fetch_box_list(page, order, True)
         except Exception as e:
             log.log_error(str(e))
@@ -114,10 +116,10 @@ class Fetch:
         try:
             data = self.__fetch_api(url)
             pages = data["pages"]
-            log.log_info("正在爬取%d类型的%s，当前第%d页，总页数%d" % (type, order, page, pages))
+            log.log_info("fetch type:%d,order:%s,current page %d, total page %d" % (type, order, page, pages))
             for i in data["items"]:
                 self.__get_res(type, i['id'])
-            log.log_success("已爬取爬取%d类型的%s，当前第%d页，总页数%d" % (type, order, page, pages))
+            log.log_success("fetched type:%d,order:%s,current page %d, total page %d" % (type, order, page, pages))
         except Exception as e:
             log.log_error(str(e))
             self.fetch_res(page, type, order, True)
@@ -135,15 +137,15 @@ class Fetch:
             data = self.__fetch_api(url)
             pages = data["pages"]
             if pages == 0:
-                log.log_success("用户%s的盒子内容为空" % user_id)
+                log.log_success("user %s box is empty" % user_id)
                 return
-            log.log_info("正在爬取%d的盒子，当前第%d页，总页数%d" % (user_id, page, pages))
+            log.log_info("fetch user %s box, current page %d, total page %d" % (user_id, page, pages))
             for i in data["items"]:
                 print(i)
                 show = i['show']
                 self.db.add_box(i['id'], user_id, i['bookmun'], i['picmun'], i['vodmun'], i['filmmun'], i['collect'],
                                 i['follow_times'], self.db.sql_format(i, 'name'), self.db.sql_format(show, 'img'))
-            log.log_success("已爬取%d的盒子，当前第%d页，总页数%d" % (user_id, page, pages))
+            log.log_success("fetch user %s box, current page %d, total page %d" % (user_id, page, pages))
         except Exception as e:
             log.log_error(str(e))
             time.sleep(1)
@@ -162,12 +164,12 @@ class Fetch:
             data = self.__fetch_api(url, need_token=True, )
             pages = data["pages"]
             if pages == 0:
-                log.log_success("我关注的列表为空")
+                log.log_success("Mine follow is empty")
                 return
-            log.log_info("正在爬取我关注的内容，当前第%d页，总页数%d" % (page, pages))
+            log.log_info("fetch mine follow res, current page %d, total page %d" % (page, pages))
             for i in data["items"]:
                 self.__get_res(i['t'], i['id'])
-            log.log_success("已爬取我关注的内容，当前第%d页，总页数%d" % (page, pages))
+            log.log_success("fetched mine follow res, current page %d, total page %d" % (page, pages))
         except Exception as e:
             log.log_error(str(e))
             time.sleep(1)
@@ -186,13 +188,13 @@ class Fetch:
             data = self.__fetch_api(url)
             pages = data["pages"]
             if pages == 0:
-                log.log_success("盒子%s类型为%d内容的为空"%(boxid, type))
+                log.log_success("type %d box %s is empty"%(boxid, type))
                 return
-            log.log_info("正在爬取盒子%s，当前第%d页，总页数%d" % (boxid, page, pages))
+            log.log_info("fetch box %s, current page %d, total page %d" % (boxid, page, pages))
             for i in data["items"]:
                 self.__get_res(type, i['id'])
                 self.db.add_box_res(boxid, i['id'])
-            log.log_success("已爬取盒子%s，当前第%d页，总页数%d" % (boxid, page, pages))
+            log.log_success("fetched box %s, current page %d, total page %d" % (boxid, page, pages))
         except Exception as e:
             log.log_error(str(e))
             time.sleep(1)
@@ -215,7 +217,7 @@ class Fetch:
                 count += 1
                 self.db.set_box_flag(res['boxid'], 2)
             else:
-                log.log_success("全部盒子爬取完毕，总计：" + count)
+                log.log_success("all box fetched,total:" + count)
                 break
 
     # 爬取资源并入库
@@ -242,7 +244,7 @@ class Fetch:
                             num, collect['id'], collect['userid'], name, nickname, type, timestamp,
                             topnum)
             self.db.add_box_res(collect['id'], res['id'])
-            log.log_info("已爬取%s[%s], name:%s" % (type_str, uuid, ""))
+            log.log_info("fetched %s[%s], name:%s" % (type_str, uuid, ""))
             if type == 1:
                 images = data['image']
                 for image in images:
@@ -252,6 +254,6 @@ class Fetch:
             self.duplicate_count += 1
             self.serial_duplicate_count += 1
             if self.serial_duplicate_count % 10 == 1:
-                log.log_info("资源已连续重复爬取%d次，总重复%d次" % (self.serial_duplicate_count, self.duplicate_count))
+                log.log_info("serial duplicate %d times，total duplicate %d times" % (self.serial_duplicate_count, self.duplicate_count))
         except Exception:
             raise

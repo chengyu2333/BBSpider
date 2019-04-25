@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from database import DB
 from fetch import Fetch
 import log
@@ -26,19 +28,19 @@ def download_video():
             video_type = res['video'][0:5]
             video_url = apiserver[video_type] + res['video'][5:]
             video_name = res['video'].split("/")[-1]
-            log.log_info("下载视频[%s]%s" % (res['uuid'], video_url))
+            log.log_info("download video [%s]%s" % (res['uuid'], video_url))
             if fetch.download_file(video_url, video_path + video_name):
                 db.set_res_video_path(res['uuid'], video_name)
 
             img_type = res['img'][0:5]
             img_url = apiserver[img_type] + res['img'][5:]
             img_name = res['img'].split("/")[-1]
-            log.log_info("下载封面[%s]%s" % (res['uuid'], video_url))
+            log.log_info("download cover [%s]%s" % (res['uuid'], video_url))
             if fetch.download_file(img_url, video_path + video_name + ".jpg"):
                 db.set_res_img_path(res['uuid'], video_name + ".jpg")
             count += 1
         else:
-            log.log_success("全部视频下载完毕，总计：" + count)
+            log.log_success("download finished, count：" + count)
             break
 
 
@@ -50,12 +52,12 @@ def download_image():
             image_type = res['img'][0:5]
             image_url = apiserver[image_type] + res['img'][5:]
             image_name = res['img'].split("/")[-1]
-            log.log_info("下载图片[%s]%s" % (res['uuid'], image_url))
+            log.log_info("down image[%s]%s" % (res['uuid'], image_url))
             if fetch.download_file(image_url, image_path + image_name):
                 db.set_image_path(res['uuid'], image_name)
             count += 1
         else:
-            log.log_success("全部图片下载完毕，总计：" + count)
+            log.log_success("download finished, count:" + count)
             break
 
 
@@ -67,12 +69,12 @@ def download_box_cover():
             image_type = res['img'][0:5]
             image_url = apiserver[image_type] + res['img'][5:]
             image_name = res['img'].split("/")[-1]
-            log.log_info("下载盒子封面[%s]%s" % (res['boxid'], image_url))
+            log.log_info("download box cover[%s]%s" % (res['boxid'], image_url))
             if fetch.download_file(image_url, cover_path + image_name):
                 db.set_box_image_path(res['boxid'], image_name)
             count += 1
         else:
-            log.log_success("全部盒子封面下载完毕，总计：" + str(count))
+            log.log_success("download box cover finished,total：" + str(count))
             break
 
 # download_box_cover()
