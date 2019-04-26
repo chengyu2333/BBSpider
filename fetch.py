@@ -205,22 +205,23 @@ class Fetch:
             else:
                 self.fetch_res_by_box_id(boxid, page + 1, type, True)
 
-    # 爬取全部盒子
-    def fetch_res_by_all_box(self, type=2, startPage=1):
+    # 爬取全部盒子 type : 1 图片 2小视频 3小说  4电影
+    def fetch_res_by_all_box(self, type, startPage=1):
         count = 0
         while True:
-            res = self.db.get_unfetchbox_one()
+            res = self.db.get_unfetchbox_one(type)
             print(res)
             if res:
-                self.db.set_box_flag(res['boxid'], 1)
+                self.db.set_box_flag(res['boxid'], 1, type)
                 self.fetch_res_by_box_id(res['boxid'], startPage, type, True)
                 count += 1
-                self.db.set_box_flag(res['boxid'], 2)
+                self.db.set_box_flag(res['boxid'], 2, type)
             else:
-                log.log_success("all box fetched,total:" + count)
+                log.log_success("all box fetched,total:" + str(count))
                 break
 
     # 爬取资源并入库
+    # TODO 小说和电影
     def __get_res(self, type, uuid):
         try:
             data = self.__fetch_api("http://172.80.57.10/api/v1.%d/show/%d" % (type, uuid))

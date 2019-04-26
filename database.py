@@ -7,10 +7,10 @@ class DB:
     _conn = None
 
     def __init__(self):
-        self._host = "localhost"
+        self._host = "tzz.213.name"
         self._port = 3306
-        self._user = "root"
-        self._password = "root"
+        self._user = "bb"
+        self._password = "bb"
         self._db_name = "bb"
         self.connect(self._db_name)
         self.duplicate_count = 0
@@ -80,17 +80,29 @@ class DB:
         except Exception:
             raise
 
-    def get_unfetchbox_one(self):
-        try:
+    def get_unfetchbox_one(self, type):
+        sql = None
+        if type == 2:
             sql = "select * from box where flag=0 or flag=1 limit 1"
+        elif type == 1:
+            sql = "select * from box where flag_img=0 or flag_img=1 limit 1"
+        elif type == 4:
+            sql = "select * from box where flag_film=0 or flag_film=1 limit 1"
+        try:
             self._db_cursor.execute(sql)
             return self._db_cursor.fetchone()
         except Exception:
             raise
 
-    def set_box_flag(self, boxid, flag):
-        try:
+    def set_box_flag(self, boxid, flag, type):
+        sql = None
+        if type == 2:
             sql = "update box set flag = %s where boxid = %s" % (flag, boxid)
+        elif type == 1:
+            sql = "update box set flag_img = %s where boxid = %s" % (flag, boxid)
+        elif type == 4:
+            sql = "update box set flag_film = %s where boxid = %s" % (flag, boxid)
+        try:
             self._db_cursor.execute(sql)
             return self._db_cursor.fetchone()
         except Exception:
