@@ -146,6 +146,11 @@ class Fetch:
                 self.db.add_box(i['id'], user_id, i['bookmun'], i['picmun'], i['vodmun'], i['filmmun'], i['collect'],
                                 i['follow_times'], self.db.sql_format(i, 'name'), self.db.sql_format(show, 'img'))
             log.log_success("fetch user %s box, current page %d, total page %d" % (user_id, page, pages))
+        except IntegrityError:
+            self.duplicate_count += 1
+            self.serial_duplicate_count += 1
+            if self.serial_duplicate_count % 10 == 1:
+                log.log_info("serial duplicate %d times，total duplicate %d times" % (self.serial_duplicate_count, self.duplicate_count))
         except Exception as e:
             log.log_error(str(e))
             time.sleep(1)
