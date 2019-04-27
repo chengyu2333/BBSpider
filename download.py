@@ -29,7 +29,7 @@ def download_video():
             video_url = apiserver[video_type] + res['video'][5:]
             video_name = res['video'].split("/")[-1]
             log.log_info("download video [%s]%s" % (res['uuid'], video_url))
-            if fetch.download_file(video_url, video_path + video_name):
+            if fetch.download_large_file(video_url, video_path + video_name):
                 db.set_res_video_path(res['uuid'], video_name)
 
             img_type = res['img'][0:5]
