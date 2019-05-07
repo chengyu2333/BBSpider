@@ -35,7 +35,7 @@ def download_video():
             img_type = res['img'][0:5]
             img_url = apiserver[img_type] + res['img'][5:]
             img_name = res['img'].split("/")[-1]
-            log.log_info("download cover [%s]%s" % (res['uuid'], video_url))
+            log.log_info("download cover [%s]%s" % (res['uuid'], img_url))
             if fetch.download_file(img_url, video_path + video_name + ".jpg"):
                 db.set_res_img_path(res['uuid'], video_name + ".jpg")
             count += 1
