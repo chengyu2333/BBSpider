@@ -31,7 +31,7 @@ class Fetch:
             if need_token:
                 if self.__token is None:
                     raw = requests.post("http://172.80.57.10/auth/sign_in",
-                                        json={"password": self.password, "username": self.username}).text
+                                        json={"password": self.password, "username": self.username}, timeout=(5, 20)).text
                     data = json.loads(raw)
                     if data['code'] == 200:
                         self.__token = "Basic " + data['data']['token']
@@ -59,7 +59,7 @@ class Fetch:
            wait_exponential_max=6000)
     def download_file(self, url, filename):
         try:
-            req = request.Request(url)
+            req = request.Request(url, timeout=(5, 20))
             data = request.urlopen(req).read()
             with open(filename, 'wb') as f:
                 f.write(data)
@@ -78,13 +78,13 @@ class Fetch:
     def download_large_file(self, url, filename):
         count = 0
         try:
-            with closing(requests.get(url, stream=True)) as res:
+            with closing(requests.get(url, stream=True, timeout=(5, 20))) as res:
                 chunk_size = 1024000  # 每次请求的块大小
                 content_size = int(res.headers['content-length'])  # 文件总大小
                 with open(filename, "wb") as file:
                     for data in res.iter_content(chunk_size=chunk_size):
                         count += 1
-                        current = len(data) * count / 1024 / 1024
+                        current = chunk_size * count / 1024 / 1024
                         total = content_size / 1024 / 1024
                         log.log_info("total: %.2f MB  current:%.2f MB  percent:%.2f" % (total, current, current/total*100))
                         file.write(data)
