@@ -40,7 +40,7 @@ def download_video():
                 db.set_res_img_path(res['uuid'], video_name + ".jpg")
             count += 1
         else:
-            log.log_success("download finished, count：" + count)
+            log.log_success("download finished, count：" + str(count))
             break
 
 
@@ -57,7 +57,7 @@ def download_image():
                 db.set_image_path(res['uuid'], image_name)
             count += 1
         else:
-            log.log_success("download finished, count:" + count)
+            log.log_success("download finished, count:" + str(count))
             break
 
 
